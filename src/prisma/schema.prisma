@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+// Define the product model
+model Product {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  url           String         @unique
+  currency      String
+  image         String
+  title         String
+  currentPrice  Float
+  originalPrice Float
+  reviewsCount  Int
+  isOutOfStock  Boolean        @default(false)
+  rating        Int
+  lowestPrice   Float
+  highestPrice  Float
+  averagePrice  Float
+  discountRate  Float
+  description   String?
+  category      String?
+  userIDs       String[]       @db.ObjectId
+  users         User[]         @relation(fields: [userIDs], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  priceHistory  PriceHistory[]
+}
+
+// Define the price history model
+model PriceHistory {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  price     Float
+  date      DateTime? @default(now())
+  productId String   @db.ObjectId
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+// Define the user model
+model User {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  email      String    @unique
+  productIDs String[]  @db.ObjectId
+  products   Product[] @relation(fields: [productIDs], references: [id])
+}
