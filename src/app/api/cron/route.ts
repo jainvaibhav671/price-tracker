@@ -2,6 +2,7 @@ import { scrapeAndStoreProduct } from "@/lib/actions";
 import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
 import prismaClient from "@/lib/prisma";
 import { getEmailNotifType } from "@/lib/utils";
+import { Product, User } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export const maxDuration = 300; // 5 minutes
@@ -16,7 +17,7 @@ export async function GET() {
         if (products.length == 0) throw new Error("No proudcts found")
 
         const updatedProducts = await Promise.all(
-            products.map(async (product: any) => {
+            products.map(async (product: Product) => {
                 const newProduct = await scrapeAndStoreProduct({ product: product, includeUsers: true })
                 if (typeof newProduct === "undefined" ) throw new Error("Couldn't fetch product, try again later")
 
@@ -31,7 +32,7 @@ export async function GET() {
                     }
 
                     const emailContent = await generateEmailBody(productInfo, emailNotifType)
-                    const userEmails = newProduct.users.map((user) => user.email)
+                    const userEmails = newProduct.users.map((user: User) => user.email)
 
                     await sendEmail(emailContent, userEmails)
                 }
