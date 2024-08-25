@@ -6,7 +6,7 @@ import { Notification } from "./notification-types"
 
 export async function generateEmailBody(
     product: EmailProductInfo,
-    type: NotificationType
+    type: NotificationType,
 ) {
     const THRESHOLD_PERCENTAGE = 40;
     // Shorten the product title
@@ -34,7 +34,10 @@ export async function generateEmailBody(
             </div>
             <p>Stay tuned for more updates on ${product.title} and other products you're tracking.</p>
 
-            <a href="${process.env.DEPLOYED_URL}/api/unsubscribe?userId=">Dont' want to receive updates? <span style='text-decoration: underline; color: blue;'>Unsubscribe</span></a>
+            <a href=""></a>
+            <a href="${process.env.DEPLOYED_URL}/api/unsubscribe?productId=${product.id}" target="_blank" rel="noopener noreferrer">
+              Dont' want to receive updates? <span style='text-decoration: underline; color: blue;'>Unsubscribe</span>
+            </a>
           </div>
         `;
             break;

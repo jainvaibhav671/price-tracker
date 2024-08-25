@@ -38,4 +38,4 @@ export type EmailContent = {
   body: string;
 };
 
-export type EmailProductInfo = Pick<Product, "title" | "url" | "image">
+export type EmailProductInfo = Pick<Product, "id" | "title" | "url" | "image">

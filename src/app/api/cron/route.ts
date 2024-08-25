@@ -20,6 +20,7 @@ export async function GET() {
 
                 if (emailNotifType && newProduct.userIDs.length > 0) {
                     const productInfo = {
+                        id: newProduct.id,
                         title: newProduct.title,
                         url: newProduct.url,
                         image: newProduct.image
