@@ -5,7 +5,7 @@ import { getEmailNotifType } from "@/lib/utils";
 import { Product, User } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-export const maxDuration = 300; // 5 minutes
+export const maxDuration = 60; // 5 minutes
 export const revalidate = 0;
 export const dynamic = "force-dynamic"
 
