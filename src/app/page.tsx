@@ -7,7 +7,6 @@ import Image from "next/image";
 export default async function Home() {
 
   const products = await getAllProducts()
-  console.log(products)
 
   return (
     <>
@@ -38,7 +37,7 @@ export default async function Home() {
       </section>
       <section className="trending-section">
         <h2 className="section-text text-primary">Trending</h2>
-        <div className="flex flex-wrap gap-x-8 gap-y-16">
+        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-8 gap-y-16">
           {products?.map(product => (
             <ProductCard key={product.id} product={product} />
           ))}

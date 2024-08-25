@@ -1,5 +1,6 @@
 import ProductInfoCard from "@/components/PriceInfoCard"
 import { ProductCard } from "@/components/ProductCard"
+import TrackModal from "@/components/TrackModal"
 import { getProductById } from "@/lib/actions"
 import { formatNumber } from "@/lib/utils"
 import Image from "next/image"
@@ -69,6 +70,7 @@ export default async function Page({ params: { id } }: Props) {
                             <ProductInfoCard title="Highest Price" iconSrc="/assets/icons/arrow-up.svg" value={`${product.currency} ${product.highestPrice && formatNumber(product.highestPrice)}`} color="#FA7677" />
                             <ProductInfoCard title="Lowest Price" iconSrc="/assets/icons/arrow-down.svg" value={`${product.currency} ${product.lowestPrice && formatNumber(product.lowestPrice)}`} color="#22FF39" />
                         </div>
+                        <TrackModal productId={id} />
                     </div>
                 </div>
             </div>

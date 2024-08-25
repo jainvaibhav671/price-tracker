@@ -1,12 +1,6 @@
 import { PriceHistory, Product } from "@prisma/client";
 import { Cheerio, CheerioAPI, Element } from "cheerio";
-
-const Notification = {
-  WELCOME: "WELCOME",
-  CHANGE_OF_STOCK: "CHANGE_OF_STOCK",
-  LOWEST_PRICE: "LOWEST_PRICE",
-  THRESHOLD_MET: "THRESHOLD_MET",
-};
+import { Notification } from "@/lib/nodemailer/notification-types";
 
 const THRESHOLD_PERCENTAGE = 40;
 

@@ -1,11 +1,26 @@
 "use server";
 
 import { scrapeAmazonProduct } from "../scraper";
-import prismaClient from "../prisma";
+import prismaClient from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getAveragePrice, getHighestPrice, getLowestPrice } from "../utils";
+import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
+import { Product } from "@prisma/client";
 
-export async function scrapeAndStoreProduct(productURL: string) {
+export async function scrapeAndStoreProduct(params: { productURL?: string; product?: Product, includeUsers: boolean }) {
+
+  let existingProduct: any | undefined = undefined;
+  let productURL = "";
+
+  if (typeof params.product !== "undefined") {
+    existingProduct = params.product
+    productURL = params.product.url
+  }
+
+  if (typeof params.productURL !== "undefined") {
+    productURL = params.productURL
+  }
+
   if (productURL.length == 0) return;
 
   try {
@@ -15,19 +30,20 @@ export async function scrapeAndStoreProduct(productURL: string) {
     // either all goes right or all goes wrong
     const newProduct = await prismaClient.$transaction(async (prisma) => {
       let product = scrapedProduct;
-      console.log("PRODUCT: ", product)
-      const existingProduct = await prismaClient.product.findFirst({
-        where: {
-          url: scrapedProduct.url,
-        },
-        include: {
-          priceHistory: true,
-        },
-      });
-      console.log(existingProduct)
+
+      if (typeof existingProduct === "undefined") {
+        existingProduct = await prismaClient.product.findFirst({
+          where: {
+            url: scrapedProduct.url,
+          },
+          include: {
+            priceHistory: true,
+          },
+        });
+      }
 
       // update the product's price history
-      if (existingProduct) {
+      if (typeof existingProduct !== "undefined" && existingProduct != null) {
         const newPriceHistoryItem = await prisma.priceHistory.create({
           data: {
             price: product.priceHistory[0].price,
@@ -39,7 +55,8 @@ export async function scrapeAndStoreProduct(productURL: string) {
 
         return await prisma.product.update({
           include: {
-            priceHistory: true
+            priceHistory: true,
+            users: params.includeUsers
           },
           where: {
             id: existingProduct.id
@@ -60,6 +77,7 @@ export async function scrapeAndStoreProduct(productURL: string) {
       return await prisma.product.create({
         include: {
           priceHistory: true,
+          users: params.includeUsers
         },
         data: {
           ...product,
@@ -73,7 +91,7 @@ export async function scrapeAndStoreProduct(productURL: string) {
     })
 
     revalidatePath(`/products/${newProduct.id}`)
-    return scrapedProduct;
+    return newProduct;
   } catch (error: any) {
     throw new Error(`Failed to create/update product: ${error.message}`);
   }
@@ -103,10 +121,9 @@ export async function getProductById(productId: string) {
 export async function getAllProducts() {
   try {
     const products = await prismaClient.product.findMany()
-    console.log(products)
     return products
-  } catch(error) {
-
+  } catch (error) {
+    console.log(error)
   }
 }
 
@@ -129,3 +146,54 @@ export async function getAllProducts() {
 //     console.log(error)
 //   }
 // }
+
+export async function addUserEmailToProduct(productId: string, email: string) {
+  try {
+
+    const product = await getProductById(productId)
+
+    if (!product || typeof product === "undefined") return;
+
+    const user = await prismaClient.user.findFirst({
+      where: {
+        email: email
+      }
+    })
+
+    // user does not exist
+    if (!user) {
+      await prismaClient.user.create({
+        data: {
+          email: email,
+          productIDs: [productId]
+        }
+      })
+    } else {
+
+      if (productId in user.productIDs) {
+        return { message: "You are already tracking this product" }
+      }
+
+      await prismaClient.user.update({
+        where: {
+          id: user.id
+        },
+        data: {
+          productIDs: [
+            ...user.productIDs,
+            productId
+          ]
+        }
+      })
+    }
+
+    const emailContent = await generateEmailBody(product, "WELCOME")
+    await sendEmail(emailContent, [email])
+
+    return { message: "Your will now receive product updates in your mail!" }
+  } catch (error) {
+    console.log(error)
+
+    return { message: "Try again later." }
+  }
+}
