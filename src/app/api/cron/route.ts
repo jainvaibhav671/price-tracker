@@ -4,6 +4,10 @@ import prismaClient from "@/lib/prisma";
 import { getEmailNotifType } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
+export const maxDuration = 300; // 5 minutes
+export const revalidate = 0;
+export const dynamic = "force-dynamic"
+
 export async function GET() {
     try {
 
@@ -12,7 +16,7 @@ export async function GET() {
         if (products.length == 0) throw new Error("No proudcts found")
 
         const updatedProducts = await Promise.all(
-            products.map(async (product) => {
+            products.map(async (product: any) => {
                 const newProduct = await scrapeAndStoreProduct({ product: product, includeUsers: true })
                 if (typeof newProduct === "undefined" ) throw new Error("Couldn't fetch product, try again later")
 

@@ -38,6 +38,7 @@ export async function scrapeAndStoreProduct(params: { productURL?: string; produ
           },
           include: {
             priceHistory: true,
+            users: params.includeUsers
           },
         });
       }
@@ -69,7 +70,7 @@ export async function scrapeAndStoreProduct(params: { productURL?: string; produ
             isOutOfStock: product.isOutOfStock,
             lowestPrice: getLowestPrice(product.priceHistory),
             highestPrice: getHighestPrice(product.priceHistory),
-            averagePrice: getAveragePrice(product.priceHistory)
+            averagePrice: getAveragePrice(product.priceHistory),
           }
         })
       }
