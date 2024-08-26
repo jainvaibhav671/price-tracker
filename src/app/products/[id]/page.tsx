@@ -76,7 +76,7 @@ export default async function Page({ params: { id } }: Props) {
             </div>
         </div>
 
-        <div className="flex flex-col gap-16">
+        {/* <div className="flex flex-col gap-16">
             <div className="flex flex-col gap-5">
                 <h3 className="text-2xl text-secondary font-semibold">Product Description</h3>
                 <div className="flex flex-col gap-4">{product?.description?.split('\n')}</div>
@@ -86,6 +86,6 @@ export default async function Page({ params: { id } }: Props) {
                 <Image src="/assets/icons/bag.svg" alt="check" width={22} height={22} />
                 <Link href="/" className="text-base text-white">Buy Now</Link>
             </button>
-        </div>
+        </div> */}
     </div>
 }
