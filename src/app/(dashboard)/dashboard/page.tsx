@@ -10,7 +10,7 @@ export default async function Page() {
         <>
             <h1>Your Products</h1>
                 <div className="grid grid-cols-8 gap-8">
-            {user?.products.map((product) => <ProductCard product={product} />)}
+            {user?.products.map((product) => <ProductCard key={product.id} product={product} />)}
             </div>
         </>
     )

@@ -81,6 +81,7 @@ export async function generateEmailBody(
 
 const transporter = nodemailer.createTransport({
     //pool: true,
+    // @ts-ignore
     service: "gmail",
     //port: 2525,
     auth: {
