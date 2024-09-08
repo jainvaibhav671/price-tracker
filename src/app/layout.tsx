@@ -27,22 +27,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(spaceGrotesk.className, "bg-background")}>
-        <SessionProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+      <body className={spaceGrotesk.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionProvider>
             <Toaster />
             <main className="max-w-10xl h-screen mx-auto">
               <Navbar />
               {children}
             </main>
-          </ThemeProvider>
-        </SessionProvider>
+          </SessionProvider>
+        </ThemeProvider>
       </body>
-    </html>
+    </html >
   );
 }
