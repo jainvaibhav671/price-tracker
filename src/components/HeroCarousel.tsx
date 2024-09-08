@@ -20,6 +20,9 @@ const HeroCarousel = () => {
         showThumbs={false}
         showArrows={false}
         showStatus={false}
+        showIndicators={false}
+        centerMode
+        swipeable
         autoPlay
         infiniteLoop
         interval={2000}
@@ -31,7 +34,7 @@ const HeroCarousel = () => {
             alt={image.alt}
             width={484}
             height={484}
-            className="object-contain"
+            className="object-contain h-[300px]"
           />
         ))}
       </Carousel>
@@ -40,7 +43,7 @@ const HeroCarousel = () => {
         alt="arrow"
         width={175}
         height={175}
-        className="max-xl:hidden absolute -left-[15%] bottom-0 z-0"
+        className="arrow-img max-xl:hidden absolute -left-[15%] bottom-0 z-0"
       />
     </div>
   );

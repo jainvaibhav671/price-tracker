@@ -71,7 +71,7 @@ export async function scrapeAmazonProduct(productURL: string) {
       priceHistory: priceHistory,  // TODO: get a history from a database
       lowestPrice: Math.min(Number(currentPrice), Number(originalPrice)),
       highestPrice: Math.max(Number(currentPrice), Number(originalPrice)),
-      averagePrice: (Number(currentPrice) + Number(originalPrice)) / 2
+      averagePrice: Number(currentPrice) || Number(originalPrice)
     };
   } catch (error: any) {
     console.log(error)

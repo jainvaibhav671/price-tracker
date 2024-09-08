@@ -1,8 +1,15 @@
 import { PriceHistory, Product } from "@prisma/client";
 import { Cheerio, CheerioAPI, Element } from "cheerio";
 import { Notification } from "@/lib/nodemailer/notification-types";
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+import axios from "axios";
 
 const THRESHOLD_PERCENTAGE = 40;
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 // Extracts and returns the price from a list of possible elements.
 export function extractPrice(...elements: Cheerio<Element>[]) {

@@ -5,7 +5,8 @@ import prismaClient from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getAveragePrice, getHighestPrice, getLowestPrice } from "../utils";
 import { generateEmailBody, sendEmail } from "@/lib/nodemailer";
-import { Product } from "@prisma/client";
+import { Product, User } from "@prisma/client";
+import { auth } from "@/auth";
 
 export async function scrapeAndStoreProduct(params: { productURL?: string; product?: Product, includeUsers: boolean }) {
 
@@ -22,6 +23,9 @@ export async function scrapeAndStoreProduct(params: { productURL?: string; produ
   }
 
   if (productURL.length == 0) return;
+
+  const session = await auth()
+  if (!session) return;
 
   try {
     const scrapedProduct = await scrapeAmazonProduct(productURL);
@@ -99,6 +103,7 @@ export async function scrapeAndStoreProduct(params: { productURL?: string; produ
 }
 
 export async function getProductById(productId: string) {
+  console.log("Fetching product", productId)
   try {
 
     const product = await prismaClient.product.findFirst({
@@ -148,48 +153,34 @@ export async function getAllProducts() {
 //   }
 // }
 
-export async function addUserEmailToProduct(productId: string, email: string) {
+export async function addUserEmailToProduct(productId: string, user: User) {
   try {
 
     const product = await getProductById(productId)
-
     if (!product || typeof product === "undefined") return;
 
-    const user = await prismaClient.user.findFirst({
+    console.log("addUserEmailToProduct", user)
+    const alreadyTracking = user.productIDs.find(val => val === productId)
+
+    if (typeof alreadyTracking !== "undefined") {
+      return {
+        message: "You are already tracking this product"
+      }
+    }
+
+    await prismaClient.user.update({
       where: {
-        email: email
+        id: user.id
+      },
+      data: {
+        productIDs: {
+          push: productId
+        }
       }
     })
 
-    // user does not exist
-    if (!user) {
-      await prismaClient.user.create({
-        data: {
-          email: email,
-          productIDs: [productId]
-        }
-      })
-    } else {
-
-      if (productId in user.productIDs) {
-        return { message: "You are already tracking this product" }
-      }
-
-      await prismaClient.user.update({
-        where: {
-          id: user.id
-        },
-        data: {
-          productIDs: [
-            ...user.productIDs,
-            productId
-          ]
-        }
-      })
-    }
-
     const emailContent = await generateEmailBody(product, "WELCOME")
-    await sendEmail(emailContent, [email])
+    await sendEmail(emailContent, [user.email])
 
     return { message: "Your will now receive product updates in your mail!" }
   } catch (error) {

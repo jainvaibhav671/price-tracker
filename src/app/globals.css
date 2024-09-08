@@ -2,6 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 346.8 77.2% 49.8%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 346.8 77.2% 49.8%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 20 14.3% 4.1%;
+    --foreground: 0 0% 95%;
+    --card: 24 9.8% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 346.8 77.2% 49.8%;
+    --primary-foreground: 355.7 100% 97.3%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 12 6.5% 15.1%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 346.8 77.2% 49.8%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+
+* {
+  @apply border-border;
+}
+body {
+  @apply bg-background text-foreground;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -9,11 +75,11 @@
   scroll-behavior: smooth;
 }
 
-@layer base {
+/* @layer base {
   body {
     @apply font-inter;
   }
-}
+} */
 
 @layer utilities {
   .btn {
@@ -21,11 +87,11 @@
   }
 
   .head-text {
-    @apply mt-4 text-6xl leading-[72px] font-bold tracking-[-1.2px] text-gray-900;
+    @apply mt-4 text-6xl leading-[72px] font-bold tracking-[-1.2px];
   }
 
   .section-text {
-    @apply text-primary xl:text-4xl text-3xl font-semibold;
+    @apply text-secondary text-[32px] font-semibold;
   }
 
   .small-text {
@@ -37,7 +103,7 @@
   }
 
   .hero-carousel {
-    @apply relative sm:px-10 py-5 sm:pt-20 pb-5 max-w-[560px] h-[700px] w-full bg-[#F2F4F7] rounded-[30px] sm:mx-auto;
+    @apply relative sm:px-10 py-5 sm:pt-20 pb-5 max-w-[560px] h-[530px] w-full bg-background border-2 rounded-3xl sm:mx-auto flex justify-center items-center;
   }
 
   .carousel {
@@ -54,6 +120,10 @@
 
   .carousel .control-dots .dot.selected {
     @apply bg-[#475467] !important;
+  }
+
+  .arrow-img > svg {
+    @apply text-red-700 fill-red-700;
   }
 
   .trending-section {
@@ -91,11 +161,11 @@
   }
 
   .dialog-content {
-    @apply p-6 bg-white inline-block w-full max-w-md my-8 overflow-hidden text-left align-middle transition-all transform shadow-xl rounded-2xl;
+    @apply p-6  bg-white inline-block w-full max-w-md my-8 overflow-hidden text-left align-middle transition-all transform  shadow-xl rounded-2xl;
   }
 
   .dialog-head_text {
-    @apply text-secondary text-lg leading-[24px] font-semibold mt-4;
+    @apply text-foreground text-lg leading-[24px] font-semibold mt-4;
   }
 
   .dialog-input_container {
@@ -116,12 +186,12 @@
   }
 
   .nav-logo {
-    @apply font-spaceGrotesk text-[21px] text-secondary font-bold;
+    @apply font-spaceGrotesk text-[21px] text-foreground font-bold;
   }
 
   /* PRICE INFO */
   .price-info_card {
-    @apply flex-1 min-w-[200px] flex flex-col gap-2 border-l-[3px] rounded-10 px-5 py-4;
+    @apply flex-1 min-w-[200px] flex flex-col gap-2 border-l-[3px] rounded-10 bg-white-100 px-5 py-4;
   }
 
   /* PRODUCT CARD */
@@ -130,7 +200,7 @@
   }
 
   .product-card_img-container {
-    @apply w-full h-full flex-1 relative flex flex-col gap-5 p-4 rounded-md;
+    @apply flex-1 relative flex flex-col gap-5 p-4 rounded-md;
   }
 
   .product-card_img {
@@ -143,7 +213,7 @@
 
   /* SEARCHBAR INPUT */
   .searchbar-input {
-    @apply flex-1 min-w-[200px] w-full p-3 border border-gray-300 rounded-lg shadow-xs text-base text-gray-500 focus:outline-none;
+    @apply flex-1 min-w-[200px] w-full p-3 border border-gray-300 rounded-lg text-base focus:outline-none;
   }
 
   .searchbar-btn {
